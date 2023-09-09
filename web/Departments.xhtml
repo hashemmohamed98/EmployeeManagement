@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="template.xhtml" 
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"      
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Departments Management</title>
+
+        <link href="#{root}/EmployeeManagement/resources/css/departments.css" rel="stylesheet"/>
+    </h:head>
+
+    <ui:define name="content" >
+        <p:growl id="message" showDetail="true" />
+        <div class="container">
+            <div class="row">
+                <h:form id="searchForm">
+                    <div class="col-sm-12">
+                        <div class="card  mt-4 " style="width:auto; border-color: var(--bgcolor)">
+                            <div class="card-body">
+                                <div class="container">
+                                    <div class="row">
+
+                                        <div class="col-sm">
+                                            <div class=" form-group mt-2">
+                                                <p:outputLabel for="depName" value="Department Name"/>
+                                                <p:inputText id="depName" class="form-control form-control-user" value="#{departmentBean.department.name}"/>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-sm">
+                                            <div class=" form-group mt-2">
+                                                <p:outputLabel for="status" value="Status"/>
+                                                <p:selectOneMenu id="status"  class="form-control selectInput" value="#{departmentBean.department.active}">
+                                                    <f:selectItem  itemValue="#{null}" itemLabel="Select Status" noSelectionOption="true"/>
+                                                    <f:selectItem itemValue="true" itemLabel="Active"/>
+                                                    <f:selectItem itemValue="false" itemLabel="Inactive"/>
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm">
+                                                <div class=" form-group mt-2">
+
+                                                </div>
+                                            </div>
+                                            <div class="col-sm">
+                                                <div class=" form-group mt-2">
+
+                                                    <p:commandButton  value="Search" class="btn btn-primary mt-4 float-end" action="#{departmentBean.findDepartmentsWithFilters()}" update="depTable :message"/>                   
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> 
+                        </div> 
+                    </div> 
+                </h:form>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card  mt-4 " style="width:auto; border-color: var(--bgcolor)">
+                        <div class="card-body">
+                            <div class="container">
+                                <div class="row">
+
+                                    <div class="col-sm-10">
+                                        <h2 style="color:#00468b;"> Departments </h2>
+                                    </div>
+                                    <div class="col-sm-2 mb-4">
+                                        <h:form>
+                                            <p:commandButton value="Add Department" onclick="$('#DepartmentModal').appendTo('body').modal('show');" class="btn-primary mt-4 float-end"><i
+                                                    class="fas fa-plus fa-sm text-white-50" ></i>  </p:commandButton>
+                                        </h:form>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+
+                                    <p:dataTable id="depTable" var="department" resizableColumns="true"
+                                                 value="#{departmentBean.departments}">
+                                        <p:column headerText="Name">
+                                            <h:outputText value="#{department.name}" />
+                                        </p:column>
+
+                                        <p:column headerText="Status">
+                                             <h:outputText rendered="#{department.active}" value="Activated" style="color: green" />
+                                             <h:outputText  rendered="#{!department.active}" value="Deactivated" style="color: red"/>
+                                        </p:column>
+                                        <p:column headerText="Actions">
+                                            <h:form>   
+                                                <p:commandLink title="Edit Department" action="#{departmentBean.onDepartmentClick(department)}" style="border:none; background-color: white ;padding-left:10px;" update="formEditModal" oncomplete ="$('#editDepartmentModal').appendTo('body').modal('show');"> 
+                                                    <i class="fa-solid fa-pen" style="color: #007bff"></i> 
+                                                </p:commandLink>
+
+                                                <p:commandLink title="Deactivate Department" action="#{departmentBean.onDepartmentClick(department)}" style="border:none; background-color: white; padding-left:10px;"  oncomplete ="$('#DeactivateModal').appendTo('body').modal('show');"> 
+                                                    <i class="fa-solid fa-circle-xmark" style="color: #d33333"></i> 
+                                                </p:commandLink>
+                                            </h:form>
+                                        </p:column>
+                                    </p:dataTable>
+
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for add-->
+        <div class="modal fade" id="DepartmentModal" tabindex="-1" role="dialog" aria-labelledby="departmentModalLabel">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <h:form id="addModalForm">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Add Department</h5>
+                            <p:commandLink id="close" class="btn-close" action="#{departmentBean.resetDepartment()}" oncomplete="$('#DepartmentModal').appendTo('body').modal('hide');" update="addModalForm" >
+
+                            </p:commandLink>
+
+                        </div>
+                        <div class="modal-body">
+
+                            <div class="form-group ">
+
+
+                                <p:outputLabel for="name" value="Department Name"/>
+                                <p:inputText id="name"   required="true" class="form-control form-control-user" value="#{departmentBean.department.name}"/>
+                                <p:outputLabel for="status" value="Status"/>
+                                <p:selectOneMenu id="status" appendTo="@this"  class="form-control selectInput" value="#{departmentBean.department.active}">
+                                
+                                    <f:selectItem itemValue="true" itemLabel="Active"/>
+                                    <f:selectItem itemValue="false" itemLabel="Inactive"/>
+                                </p:selectOneMenu>
+
+
+                            </div>
+                            <br/>
+                            <div class="modal-footer">
+                                <p:commandButton id="addSubmitBtn" class="btn btn-primary float-right"  value="Save Changes" action="#{departmentBean.addDepartment()}" update="depTable :addModalForm :searchForm :message" oncomplete="$('#DepartmentModal').appendTo('body').modal('hide');"></p:commandButton>
+
+                            </div>
+                        </div>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+        <!-- Modal for edit-->
+
+        <div class="modal fade" id="editDepartmentModal" tabindex="-1" aria-labelledby="editDepartmentModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <h:form id="formEditModal">
+                        <div class="modal-header">
+
+                            <h5 class="modal-title" id="exampleModalLabel">Edit Department</h5>
+                            <p:commandLink id="closeEditDepartmentModal" class="btn-close" action="#{departmentBean.resetDepartment()}" oncomplete="$('#editDepartmentModal').appendTo('body').modal('hide');"  update="formEditModal" ></p:commandLink>
+
+                        </div>
+                        <div class="modal-body">
+
+                            <div class="form-group ">
+                                <p:outputLabel for="name" value="Department Name"/>
+                                <p:inputText id="name" required="true" class="form-control form-control-user" value="#{departmentBean.department.name}"/>
+                                <p:outputLabel for="status" value="Status"/>
+                                <p:selectOneMenu id="status"   appendTo="@this"  class="form-control selectInput" value="#{departmentBean.department.active}">
+                                   
+                                    <f:selectItem itemValue="true" itemLabel="Active"/>
+                                    <f:selectItem itemValue="false" itemLabel="Inactive"/>
+                                </p:selectOneMenu>
+                            </div>
+
+                            <br/>
+                            <div class="modal-footer">
+                                <p:commandButton id="editSubmitBtn" class="btn btn-primary float-right"  value="Save Changes" action="#{departmentBean.editDepartment()}" update="depTable :formEditModal :searchForm :message" oncomplete="$('#editDepartmentModal').appendTo('body').modal('hide');"></p:commandButton>
+
+                            </div>
+
+
+                        </div>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="DeactivateModal" tabindex="-1" aria-labelledby="editDepartmentModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <h:form id="formDeactivateModal">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Deactivate Department</h5>
+                            <p:commandLink id="closeDeactivateModal" class="btn-close" action="#{departmentBean.resetDepartment()}" oncomplete="$('#DeactivateModal').appendTo('body').modal('hide');"></p:commandLink>
+                        </div>
+                        <div class="modal-body">
+
+                            <div class="form-group ">
+                                <p:outputLabel for="deletebtn" value="Are you Sure You Want To Deactivate This Department"/> 
+                            </div>
+                            <br/>
+                            <div class="modal-footer">
+                                <p:commandButton id="deletebtn" style="background-color:#d33333" class="btn btn-danger float-right"  value="Yes" action="#{departmentBean.deleteDepartment()}" oncomplete="$('#DeactivateModal').appendTo('body').modal('hide');" update="depTable :searchForm :message" ></p:commandButton>
+
+                            </div>
+
+
+                        </div>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

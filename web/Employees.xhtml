@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="template.xhtml" 
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"      
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Employee Management</title>
+
+        <link href="#{root}/EmployeeManagement/resources/css/employees.css" rel="stylesheet"/>
+    </h:head>
+
+    <ui:define name="content" >
+        <p:growl id="message" />
+        <div class="container">
+            <div class="row">
+                <h:form id="searchForm">
+                    <div class="col-sm-12">
+                        <div class="card  mt-4 " style="width:auto; border-color: var(--bgcolor)">
+                            <div class="card-body">
+                                <div class="container">
+                                    <div class="row">
+
+                                        <div class="col-sm">
+
+                                            <div class=" form-group mt-2">
+                                                <p:outputLabel for="empName" value="Employee Name"/>
+                                                <p:inputText id="empName" class="form-control form-control-user" value="#{employeeBean.employee.name}"/>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-sm">
+                                            <div class=" form-group mt-2">
+                                                <p:outputLabel for="empCode" value="Employee Code"/>
+                                                <p:inputText id="empCode" class="form-control form-control-user" value="#{employeeBean.employee.code}"/>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-sm">
+                                            <div class=" form-group mt-2">
+                                                <p:outputLabel for="departments" value="Department"/>
+                                                <p:selectOneMenu id="departments"  class="form-control selectInput" value="#{employeeBean.department.id}">
+
+                                                    <f:selectItem  itemValue="#{null}" itemLabel="Select Department" noSelectionOption="false"/>
+                                                    <f:selectItems value="#{employeeBean.loadDepartments()}" var="searchDeps" itemValue="#{searchDeps.id}" itemLabel="#{searchDeps.name}"/>         
+                                                </p:selectOneMenu>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+
+                                        <div class="col-sm">
+                                            <div class=" form-group mt-2">
+                                                <p:outputLabel for="status" value="Status"/>
+                                                <p:selectOneMenu id="status"  class="form-control selectInput" value="#{employeeBean.employee.active}">
+                                                    <f:selectItem  itemValue="#{null}" itemLabel="Select Status"/>
+                                                    <f:selectItem itemValue="true" itemLabel="Active"/>
+                                                    <f:selectItem itemValue="false" itemLabel="Inactive"/>
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm">
+                                            <div class=" form-group mt-2">
+
+                                            </div>
+                                        </div>
+                                        <div class="col-sm">
+                                            <div class=" form-group mt-2">
+                                                <p:commandButton  value="Search" class="btn btn-primary mt-4 float-end" action="#{employeeBean.findEmployeesWithFilters()}" update="empTable :message"/>                   
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> 
+                    </div> 
+                </h:form>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card  mt-4 " style="width:auto; border-color: var(--bgcolor)">
+                        <div class="card-body">
+                            <div class="container">
+                                <div class="row">
+
+                                    <div class="col-sm-10">
+                                        <h2 style="color:#00468b;"> Employees </h2>
+                                    </div>
+                                    <div class="col-sm-2 mb-4">
+                                        <h:form>
+                                            <p:commandButton value="Add Employee" onclick="$('#EmployeeModal').appendTo('body').modal('show');" update="addEmpForm" class="btn-primary mt-4 float-end"><i
+                                                    class="fas fa-plus fa-sm text-white-50" ></i> </p:commandButton>
+                                        </h:form>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <p:dataTable id="empTable" var="employee" resizableColumns="true"
+                                                 value="#{employeeBean.employees}">
+                                        <p:column headerText="Name">
+                                            <h:outputText value="#{employee.name}" />
+                                        </p:column>
+                                        <p:column headerText="Code"  >
+                                            <h:outputText value="#{employee.code}" />
+                                        </p:column>
+                                        <p:column headerText="Department" >
+                                            <h:outputText value="#{employee.department.name}" />
+                                        </p:column>
+                                        <p:column headerText="Status">
+                                            <h:outputText rendered="#{employee.active}" value="Activated" style="color: green" />
+                                            <h:outputText  rendered="#{!employee.active}" value="Deactivated" style="color: red"/>
+
+                                        </p:column>
+                                        <p:column headerText="Actions">
+                                            <h:form>   
+                                                <p:commandLink title="Edit Employee" action="#{employeeBean.onEmployeeClick(employee)}" style="border:none; background-color: white; padding-left:20px;" update="editEmployeeForm" oncomplete ="$('#editEmployeeModal').appendTo('body').modal('show');"> 
+                                                    <i class="fa-solid fa-pen" style="color: #007bff"></i> 
+                                                </p:commandLink>
+
+                                                <p:commandLink title="Deactivate Employee" action="#{employeeBean.onEmployeeClick(employee)}" style="border:none; background-color: white; padding-left:20px;"  oncomplete ="$('#DeactivateModal').appendTo('body').modal('show');"> 
+                                                    <i class="fa-solid fa-circle-xmark" style="color: #d33333"></i> 
+                                                </p:commandLink>
+
+
+                                            </h:form>                                        </p:column>
+
+                                    </p:dataTable>
+
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for add-->
+        <div class="modal fade" id="EmployeeModal" tabindex="-1" role="dialog" aria-labelledby="employeeModalLabel">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <h:form id="addEmpForm">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Add Employee</h5>
+                            <p:commandLink id="closeEmployeeModal" class="btn-close" action="#{employeeBean.resetData()}" oncomplete="$('#EmployeeModal').appendTo('body').modal('hide');"  update="addEmpForm" ></p:commandLink>
+
+                        </div>
+                        <div class="modal-body">
+
+                            <div class="form-group ">
+                                <p:outputLabel for="name" value="Employee Name"/>
+                                <p:inputText id="name" required="true" class="form-control form-control-user" value="#{employeeBean.employee.name}"/>
+
+                                <p:outputLabel for="empCode" value="Employee Code"/>
+                                <p:inputText id="empCode" required="true" class="form-control form-control-user" value="#{employeeBean.employee.code}"/>
+                                <p:outputLabel for="addDepartments" value="Department"/>
+                                <p:selectOneMenu id="addDepartments" required="true" appendTo="@this" class="form-control selectInput" value="#{employeeBean.department.id}">
+                                    <f:selectItem  itemValue="#{null}" itemLabel="Select Department" noSelectionOption="false"/>
+
+                                    <f:selectItems value="#{employeeBean.departments}" var="addDeps" itemValue="#{addDeps.id}" itemLabel="#{addDeps.name}"/>
+                                </p:selectOneMenu>
+                                <p:outputLabel for="status" value="Status"/>
+
+                                <p:selectOneMenu id="status" appendTo="@this" required="true"  class="form-control selectInput" value="#{employeeBean.employee.active}">
+                                    <f:selectItem itemValue="true" itemLabel="Active"/>
+                                    <f:selectItem itemValue="false" itemLabel="Inactive"/>
+                                </p:selectOneMenu>
+
+
+                            </div>
+                            <br/>
+                            <div class="modal-footer">
+                                <p:commandButton id="addSubmitBtn" class="btn btn-primary float-right"  value="Save Changes" action="#{employeeBean.addEmployee()}"  oncomplete="$('#EmployeeModal').appendTo('body').modal('hide');" update="empTable :addEmpForm :searchForm :message"/>
+                            </div>
+
+
+                        </div>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="editEmployeeModal" tabindex="-1" aria-labelledby="editEmployeeModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <h:form id="editEmployeeForm">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Edit Employee</h5>
+                            <p:commandLink id="closeEmployeeModal" class="btn-close" action="#{employeeBean.resetData()}" oncomplete="$('#editEmployeeModal').appendTo('body').modal('hide');"  update="editEmployeeForm" ></p:commandLink>
+                        </div>
+                        <div class="modal-body">
+
+                            <div class="form-group ">
+                                <p:outputLabel for="name" value="Employee Name"/>
+                                <p:inputText id="name" required="true" class="form-control form-control-user" value="#{employeeBean.employee.name}"/>
+
+                                <p:outputLabel for="empCode" value="Employee Code"/>
+                                <p:inputText id="empCode" required="true" class="form-control form-control-user" value="#{employeeBean.employee.code}"/>
+                                <p:outputLabel for="editDepartments" value="Department"/>
+
+                                <p:selectOneMenu  id="editDepartments"  required="true" appendTo="@this"  class="form-control selectInput"  value="#{employeeBean.department.id}">
+                                    <f:selectItem  itemValue="#{null}" itemLabel="Select Department"/>
+                                    <f:selectItems value="#{employeeBean.departments}" var="deps" itemLabel="#{deps.name}" itemValue="#{deps.id}"/>   
+                                </p:selectOneMenu>
+                                <p:outputLabel for="status" value="Status"/>
+
+                                <p:selectOneMenu id="status" appendTo="@this" required="true" class="form-control selectInput" value="#{employeeBean.employee.active}">
+                                    <f:selectItem itemValue="true" itemLabel="Active"/>
+                                    <f:selectItem itemValue="false" itemLabel="Inactive"/>
+                                </p:selectOneMenu>
+
+
+                            </div>
+
+                            <br/>
+                            <div class="modal-footer">
+                                <p:commandButton id="editSubmitBtn" class="btn btn-primary float-right"  value="Save Changes" action="#{employeeBean.editEmployee()}" update="empTable :editEmployeeForm :searchForm :message" oncomplete="$('#editEmployeeModal').appendTo('body').modal('hide');"></p:commandButton>
+
+                            </div>
+
+
+                        </div>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="DeactivateModal" tabindex="-1" aria-labelledby="editDepartmentModalLabel" aria-hidden="true">
+
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <h:form id="formDeactivateModal">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Deactivate Employee</h5>
+                            <p:commandLink id="closeDeactivateModal" class="btn-close" action="#{employeeBean.resetData()}" oncomplete="$('#DeactivateModal').appendTo('body').modal('hide');"></p:commandLink>
+                        </div>
+                        <div class="modal-body">
+
+                            <div class="form-group ">
+                                <p:outputLabel for="deletebtn" value="Are you Sure You Want To Deactivate This Department"/> 
+                            </div>
+                            <br/>
+                            <div class="modal-footer">
+                                <p:commandButton id="deletebtn" style="background-color:#d33333" class="btn btn-danger float-right" 
+                                                 value="Yes" action="#{employeeBean.deleteEmployee()}" oncomplete="$('#DeactivateModal').appendTo('body').modal('hide');"
+                                                 update="empTable :searchForm :message" ></p:commandButton>
+
+                            </div>
+
+
+                        </div>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

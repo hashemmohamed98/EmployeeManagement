@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+
+
+        <link href="#{root}/EmployeeManagement/resources/css/bootstrap.min.css" rel="stylesheet"/>
+        <link thref="#{root}/EmployeeManagement/resources/css/all.min.css" rel="stylesheet"/>
+        <link rel="preconnect" href="https://fonts.googleapis.com"/>
+        <link rel="preconnect" href="https://fonts.gstatic.com" />
+
+        <link href="#{root}/EmployeeManagement/resources/css/sweetalert.css" rel="stylesheet"/>
+        <link href="#{root}/EmployeeManagement/resources/css/employees.css" rel="stylesheet"/>
+        <meta charset="UTF-8"/>
+            <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+                </h:head>
+
+                <body> 
+                        <nav class="navbar navbar-expand-lg sticky-top">
+            <div class="container">
+                <a class="navbar-brand" href="#">Employee Management App</a>
+                <button class="navbar-toggler"
+                        type="button" 
+                        data-bs-toggle="collapse"
+                        data-bs-target="#main"
+                        aria-controls="main" 
+                        aria-expanded="false" 
+
+                        aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="main">
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link p-2 p-lg-3" arria-current="page" href="#{root}/EmployeeManagement/">Employees </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link p-2 p-lg-3" href="#{root}/EmployeeManagement/faces/Departments.xhtml">Departments</a>
+                        </li>
+                    </ul>
+
+                </div>
+            </div>
+        </nav>
+                    <ui:insert name="content">
+                        <div class="pageContent mt-10">
+
+
+                        </div>
+                    </ui:insert>
+                    <script src="#{root}/EmployeeManagement/resources/js/bootstrap.bundle.min.js"></script>
+                    <script src="#{root}/EmployeeManagement/resources/js/all.min.js"></script>
+                    <script src="#{root}/EmployeeManagement/resources/js/sweetalert.min.js"></script>
+                </body>
+
+                </html>
